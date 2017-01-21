@@ -1,0 +1,38 @@
+sql update语法基础 http://www.aimks.com/sql-update-the-select-statement-application.html 
+法1： http://blog.csdn.net/afeiqiang/article/details/8589535   解决我的问题，因为是更新同一张表的数据，并且update后用select 子查询，2个情况一起袭来。。
+
+-- 原始思想下的错误方法	
+create table apples(variety char(10) primary key, price int);
+insert into apples values('fuji', 5), ('gala', 6);
+update apples
+    set price = (select price from apples where variety = 'gala')   --  塞选数据源
+    where variety = 'fuji';   -- 塞选数据目的地
+
+	
+正确思路：	
+update apples
+   set price = (
+      select price from (
+         select * from apples
+      ) as x
+      where variety = 'gala')   --  筛选数据源   标本的
+   where variety = 'fuji';    -- 筛选数据目的地，要被改的
+   
+正确大概的应用：   
+   update t1_88_0_game.role_detail
+   set knapsack = (
+      select knapsack from (
+         select * from t1_88_0_game.role_detail
+      ) as x
+      where role_id = '1076')
+   where variety = 'fuji';
+   
+完整连表版
+   select role_id from 
+   update t1_88_0_game.role_detail
+   set knapsack,task,operaterid,otherdata1,otherdata2 = (
+      select knapsack,task,,otherdata1,otherdata2 from (
+         select * from t1_88_0_game.role_detail
+      ) as x
+      where role_id in ( select role_id from  role_brif   where  role_name in（"帅死人不偿命"）))    // 这边筛选一个标本的id
+   where role_id  in  ( select role_id from  role_brif   where  role_name in（"策划爆破员" , "策划爆破员2" , "策划爆破员3" ） )  )    // 这边筛选被更新的id列表
