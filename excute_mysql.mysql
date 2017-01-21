@@ -1,7 +1,7 @@
 sql update语法基础 http://www.aimks.com/sql-update-the-select-statement-application.html 
-法1： http://blog.csdn.net/afeiqiang/article/details/8589535   解决我的问题，因为是更新同一张表的数据，并且update后用select 子查询，2个情况一起袭来。。
+法1： http://blog.csdn.net/afeiqiang/article/details/8589535   解决我的问题，因为是更新同一张表的数据，并且update后用select 子查询，会报错。
 
--- 原始思想下的错误方法	
+-- 原始思想下的错误方法	（会执行报错， MySQL不允许在UpdateTable 时在SELECT FROM子句 里 指向同一张表， you cannot update a table and select from the same table in a subquery. ）
 create table apples(variety char(10) primary key, price int);
 insert into apples values('fuji', 5), ('gala', 6);
 update apples
@@ -28,7 +28,7 @@ update apples
    where variety = 'fuji';
    
 完整连表版
-   select role_id from 
+
    update t1_88_0_game.role_detail
    set knapsack,task,operaterid,otherdata1,otherdata2 = (
       select knapsack,task,,otherdata1,otherdata2 from (
